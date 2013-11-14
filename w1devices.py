@@ -8,13 +8,13 @@ SLAVE = "w1_slave"
 
 VALID = re.compile("^([0-9a-fA-F]{2})-[0-9a-fA-F]{12}$")
 
-def read_data(device):
+def read_data(config, device):
     match = VALID.match(device)
     if match.group(1) == "28":
         return read_temperature(device)
     raise Error("Unknown device type")
 
-def devices():
+def devices(config):
     names = os.listdir(BUS)
     for name in names:
         if not os.path.isdir(os.path.join(BUS, name)):
@@ -37,8 +37,3 @@ def read_temperature(device):
         "time": int(time()),
         "value": temperature
     }]
-
-if __name__ == "__main__":
-    import json
-    for device in devices():
-        print("%s" % json.dumps(read_data(device)))
