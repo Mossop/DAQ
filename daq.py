@@ -5,17 +5,14 @@ import sys
 import json
 import importlib
 
-from fcntl import lockf, LOCK_UN, LOCK_EX
 from traceback import print_exc
 from ConfigParser import ConfigParser
 
 def write_file(file, text):
     fd = open(file, "a")
-    lockf(fd, LOCK_EX)
     try:
         fd.write(text)
     finally:
-        lockf(fd, LOCK_UN)
         fd.close()
 
 def read_devices(config, modulename):
