@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+
 import w1devices
 import sys
 import json
