@@ -9,7 +9,7 @@ def read_data(config, device):
             "device": "wunderground-%s" % device,
             "sensor": sensor,
             "type": type,
-            "time": data["observation_epoch"],
+            "time": int(data["observation_epoch"]),
             "value": float(value)
         }
 
