@@ -4,6 +4,7 @@ import w1devices
 import sys
 import json
 from fcntl import lockf, LOCK_UN, LOCK_EX
+from traceback import print_exc
 
 def write_file(file, text):
     fd = open(file, "a")
@@ -16,8 +17,14 @@ def write_file(file, text):
 
 def read_devices(module):
     list = []
-    for device in module.devices():
-        list.extend(module.read_data(device))
+    try:
+        for device in module.devices():
+            try:
+                list.extend(module.read_data(device))
+            except:
+                print_exc()
+    except:
+        print_exc()
     return list
 
 if __name__ == "__main__":
