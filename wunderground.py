@@ -13,7 +13,7 @@ def read_data(config, device):
             "value": float(value)
         }
 
-    url = "http://api.wunderground.com/api/%s/conditions/q/pws:%s.json" % (config.get("wunderground", "apikey"), device)
+    url = "http://api.wunderground.com/api/%s/conditions/q/%s.json" % (config.get("wunderground", "apikey"), device)
     data = json.load(urllib.urlopen(url))["current_observation"]
 
     return [
