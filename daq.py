@@ -63,7 +63,7 @@ if __name__ == "__main__":
     for module in modules:
         sensors.extend(read_devices(config, module))
 
-    newresults = [json.dump(s) for s in sensors]
+    newresults = [json.dumps(s) for s in sensors]
 
     if (config.has_option("daq", "server")):
         try:
