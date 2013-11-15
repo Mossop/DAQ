@@ -65,10 +65,11 @@ if __name__ == "__main__":
 
     newresults = [json.dumps(s) for s in sensors]
 
+    append_file(pendingfile, newresults)
+
     if (config.has_option("daq", "server")):
         try:
             allresults = read_file(pendingfile)
-            allresults.extend(newresults)
 
             if len(allresults) == 0:
                 sys.exit(0)
@@ -95,9 +96,5 @@ if __name__ == "__main__":
                     os.rename(pendingfile, os.path.join(state, filename))
                 else:
                     os.remove(pendingfile)
-
-            newresults = []
         except:
             print_exc()
-
-    append_file(pendingfile, newresults)
