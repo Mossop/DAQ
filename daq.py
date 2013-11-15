@@ -87,15 +87,16 @@ if __name__ == "__main__":
             if processed != len(allresults):
                 raise Exception("Didn't process all data packets, saw %d expected %d" % (processed, len(allresults)))
 
-            if config.has_option("daq", "backup") and (config.get("daq", "backup") == "true"):
-                filename = "backup-%s" % datetime.now().strftime("%Y%m%d%H%M%S")
-                while os.path.isfile(os.path.join(state, filename)):
-                    filename = filename + "-1"
-                os.rename(pendingfile, os.path.join(state, filename))
-            else:
-                os.remove(pendingfile)
+            if os.path.isfile(pendingfile):
+                if config.has_option("daq", "backup") and (config.get("daq", "backup") == "true"):
+                    filename = "backup-%s" % datetime.now().strftime("%Y%m%d%H%M%S")
+                    while os.path.isfile(os.path.join(state, filename)):
+                        filename = filename + "-1"
+                    os.rename(pendingfile, os.path.join(state, filename))
+                else:
+                    os.remove(pendingfile)
 
-            sys.exit(0)
+            newresults = []
         except:
             print_exc()
 
