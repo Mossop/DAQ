@@ -55,6 +55,8 @@ if __name__ == "__main__":
     pendingfile = os.path.join(state, "pending")
 
     config = ConfigParser()
+    config.add_section("daq")
+    config.set("daq", "state", state)
     config.read(os.path.join(state, "config"))
 
     modules = config.get("daq", "modules").split(",")
