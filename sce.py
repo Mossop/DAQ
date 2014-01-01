@@ -1,7 +1,9 @@
 #! /usr/bin/env python
 
-import os, re
-from socket import getfqdn
+import sys
+import os
+import re
+import json
 from time import time
 from xml.etree import ElementTree
 from pytz import timezone, utc
@@ -12,15 +14,8 @@ def to_epoch(time):
     delta = time - epoch
     return delta.seconds + delta.days * 24 * 3600
 
-def read_data(config, device):
+def read_xml(fname, device):
     results = []
-
-    device = device[4:]
-
-    state = config.get("daq", "state")
-    fname = os.path.join(state, device) + ".xml"
-    if not os.path.isfile(fname):
-        return results
 
     tree = ElementTree.parse(fname)
 
@@ -40,17 +35,20 @@ def read_data(config, device):
     return results
 
 
-def devices(config):
-    devices = []
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Syntax: sce.py <datafile>")
+        sys.exit(1)
 
-    state = config.get("daq", "state")
+    fname = sys.argv[1]
+    if not os.path.isfile(fname):
+        print("File not found.")
+        sys.exit(1)
 
-    names = os.listdir(state)
-    for name in names:
-        if not os.path.isfile(os.path.join(state, name)):
-            continue
-        if name[-4:] != ".xml":
-            continue
-        devices.append("sce-" + name[0:-4])
-
-    return devices
+    result = re.match(r"SCE_Usage_([\d-]+)_[\d-]+_to_[\d-]+\.xml", os.path.basename(fname))
+    if result is not None:
+        results = read_xml(fname, result.group(1))
+        print("\n".join([json.dumps(r) for r in results]))
+    else:
+        print("Unknown file format.")
+        sys.exit(1)
