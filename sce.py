@@ -34,7 +34,6 @@ def read_xml(fname, device):
 
     return results
 
-
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Syntax: sce.py <datafile>")
