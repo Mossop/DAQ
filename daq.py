@@ -5,12 +5,11 @@ import sys
 import json
 import importlib
 
-from urllib2 import urlopen
 from traceback import print_exc
 from ConfigParser import ConfigParser
 from datetime import datetime
 
-API_URL = "/api/v1/submit"
+from submit import submit
 
 def read_file(file):
     if not os.path.isfile(file):
@@ -73,22 +72,8 @@ if __name__ == "__main__":
         try:
             allresults = read_file(pendingfile)
 
-            if len(allresults) == 0:
-                sys.exit(0)
-
-            url = config.get("daq", "server")
-            if url[-1:] == "/":
-                url = url[:-1]
-            url = url + API_URL
-
-            result = urlopen(url, "\n".join(allresults))
-
-            if result.getcode() != 200:
-                raise Exception("Unexcepted HTTP response %d" % result.getcode())
-
-            processed = int(result.readline().strip())
-            if processed != len(allresults):
-                raise Exception("Didn't process all data packets, saw %d expected %d" % (processed, len(allresults)))
+            server = config.get("daq", "server")
+            submit(server, allresults)
 
             if os.path.isfile(pendingfile):
                 if config.has_option("daq", "backup") and (config.get("daq", "backup") == "true"):
