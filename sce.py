@@ -22,12 +22,12 @@ def read_xml(fname, device):
 
     for interval in tree.getroot().findall(".//{http://www.w3.org/2005/Atom}IntervalReading"):
         period = interval.find("{http://www.w3.org/2005/Atom}timePeriod")
-        time = datetime.fromtimestamp(int(period.find("{http://www.w3.org/2005/Atom}start").text))
+        time = datetime.utcfromtimestamp(int(period.find("{http://www.w3.org/2005/Atom}start").text))
         time = time.replace(tzinfo = timezone("America/Los_Angeles"))
         results.append({
             "device": "sce-" + device,
-            "sensor": "electricity",
-            "type": "energy",
+            "sensor": "meter",
+            "type": "mains",
             "time": to_epoch(time),
             "duration": int(period.find("{http://www.w3.org/2005/Atom}duration").text),
             "value": float(interval.find("{http://www.w3.org/2005/Atom}value").text)
@@ -54,8 +54,8 @@ def read_csv(fname):
         time = time.replace(tzinfo = timezone("America/Los_Angeles"))
         results.append({
             "device": "sce-" + device,
-            "sensor": "electricity",
-            "type": "energy",
+            "sensor": "meter",
+            "type": "mains",
             "time": to_epoch(time),
             "duration": 3600,
             "value": float(datum["kWh Delivered"])
